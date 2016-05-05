@@ -32,7 +32,7 @@ def initial():
 	print '开始监控Orange Pi系统资源'
 	return 0
 	
-def main(args):
+def main():
 	initial()
 	
 	api='http://api.heclouds.com/devices/1100454/datapoints?type=3'
@@ -54,5 +54,4 @@ def main(args):
 	return 0
 
 if __name__ == '__main__':
-    import sys
-    sys.exit(main(sys.argv))
+    main()
