@@ -25,8 +25,11 @@
 
 import psutil
 import time
+from time import gmtime,strftime
 import requests
+
 import json
+valid = False	#剔除掉第一个样本
 
 def initial():
 	print '开始监控Orange Pi系统资源'
@@ -38,19 +41,34 @@ def main():
 	api='http://api.heclouds.com/devices/1100454/datapoints?type=3'
 	api_key='w2ZpZfGcjeZqRaijTM8YK9tnMeA='
 
-	while (True):
-		cpuload = psutil.cpu_percent(interval=None)
-		memload = psutil.virtual_memory()[2]
-		
-		payload={'memload':memload, 'cpuload':cpuload, 'connstatus':1}
-		_data=json.dumps(payload)
-		_headers={'api-key':api_key}
-		r=requests.post(api, _data, headers=_headers)
+	global valid
 
-		#print 'cpu load ', cpuload
-		#print 'mem load ', memload
-		
-		time.sleep(1)
+	while (True):
+		try:
+			cpuload = psutil.cpu_percent(interval=None)
+			memload = psutil.virtual_memory()[2]
+			if (valid):	
+				payload={'memload':memload, 'cpuload':cpuload, 'connstatus':1}
+				_data=json.dumps(payload)
+				_headers={'api-key':api_key}
+				r=requests.post(api, _data, headers=_headers)
+
+				print 'cpu load ', cpuload
+				print 'mem load ', memload
+			
+				print 'posted @ ', time.ctime()
+				print ' '
+	
+			valid = True
+			time.sleep(2)
+
+		except Exception as e:
+			print e
+			pass
+
+		finally:
+			pass
+
 	return 0
 
 if __name__ == '__main__':
